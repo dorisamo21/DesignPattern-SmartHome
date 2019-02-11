@@ -1,0 +1,102 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html>
+   <head th:include="fragments/header.html :: header"></head>
+   <body>
+	   <div id="frame"></div>
+      		
+      <div id="content">
+                              		
+      <div id="title">
+      SmrtHm <!-- title -->
+     
+                                                                              		
+      <ul>
+      <li><a href="/home">Home</a></li>
+      <li><a href="/led">Lights</a></li>
+      <li><a class="current" href="/fan">Fans</a></li>
+      <li><a href="/lcd">Lcds</a></li>
+	  </ul>
+	   </div>
+	  <div id="index">
+   		<h4>FAN CREATION</h4>
+   			<center><form  method="post">
+      		Fan Name: <input type="text" id="fanName" required="required" autocomplete="off"><br>
+      		<input id="fanMake" type="submit" value="Create Fan"/>
+      	</form>
+      	<select id="portNumber">
+		  <option>D3</option>
+		  <option>D4</option>
+		  <option>D5</option>
+		  <option>D6</option>
+		</select></center>
+		
+	<div class="messages">
+      	<h3>MESSAGES:</h3>
+      	<p><span id="message"></span></p>
+		  </div><center>
+    
+    <!--  Inject list of fans here -->
+	<div th:include="fragments/activeFans" id="devices"></div></center>
+	</div>
+    <script>
+ 		 //used to update the table with fresh data
+	 	function updateTable(){
+	 		$.ajax({
+	            type : "GET",
+	            url : "http://localhost:8080/listOfFans",
+	            success : function(data) {
+	               console.log("Successfully retrieved list of active leds");
+	               $("#devices").replaceWith(data);
+	            },
+	            async: false,
+	            error : function(data) {
+	          	  console.log("Failed to retrieve list of active leds")
+	            }
+	         });
+	 	}
+    /*
+		This script is called when user clicks Create Fan button.  It takes the parameters
+		and sends request back to out REST api.  After that it updates the table with our
+		current lists of active fans
+	*/
+	 $(document).ready(function() {
+	    $("#fanMake").click(function(event) {
+	      event.preventDefault();
+	       var fanRequest = {
+	          name : document.getElementById("fanName").value,
+	          portNumber : $("#portNumber option:selected").text()
+	       };
+	       var requestJSON = JSON.stringify(fanRequest);
+	       
+	       $.ajax({
+	          type : "POST",
+	          url : "http://localhost:8080/fan/make",
+	          headers : {
+	             "Content-Type" : "application/json"
+	          },
+	          dataType: "json",
+	          data : requestJSON,
+	          success : function(data) {
+	        	  console.log(data)
+	        	  if(data.status == 200 || data.status == 304){
+		             $("#message").text(data.message);
+	        	  }
+	        	  else{
+	        		  $("#message").text(data.errorMessage);
+	        	  }
+	          },
+	          async: false,
+	          error : function(data) {
+	        	  $("#message").text(data.message);
+	          }
+	       });
+	       updateTable();
+	    });
+	 });
+		//reload the table upon refresh or redirection
+	 	$(document).ready(function(){
+	 		updateTable();
+	 	});
+    </script>
+   </body>
+</html>

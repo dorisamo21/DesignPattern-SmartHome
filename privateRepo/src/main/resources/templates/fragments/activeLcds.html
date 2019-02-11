@@ -1,0 +1,161 @@
+ <!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html>
+  <body>
+  <!-- Active Leds -->
+      <div th:fragment= "activeLcds" id="lcdlist">
+      		<h3>Currently Active Lcds</h3><br>
+      		<table class="table table-striped">
+      			<tr>
+      				<th>Device Name</th>
+      				<th>PortNumber</th>
+      				<th>Remove</th>
+      				<th>Off/On</th>
+      				<th>Brightness Slider</th>
+      				<th>Backscreen Color</th>
+      			</tr>
+   				<tr th:each="led : ${lcds}">
+   				<script>
+   				function goTo(event){
+   					var element = event.target;
+   					console.log(element.innerHTML);
+   					var lcdName = element.innerHTML;
+   					$('#lcd_name').val(lcdName);
+   					
+   					$('#writeLcdForm').show();		
+   					$('#makeLcd').hide();
+                    $('#lcd_title').html('Lcd Print Message');   					
+   					$('#lcdScreenName').html("Enter message on "+lcdName);	
+   				}
+   				</script>
+   					<input type="hidden" id="lcdName" th:value="${led.name}"/>
+   					<td th:text="${led.name}" class="led-name-onclick"></td>
+   					<td th:text="${led.portNumber}"></td>
+   					<td><button type="button" class="remove">Remove</button></td>
+   					<td><label class="switch">
+						  <input type="checkbox" class="toggle">
+						  <span class="slider round"></span>
+						</label>
+					</td>
+					<td>
+						<input type="range" class="adjust" name="brightness" min="0" max="15">
+						 <label for="Brightness">Brightness</label>
+					</td>
+					<td>
+						      	<select class="changeColor" id="lcdColor">
+								  <option value="Red">Red</option>
+								  <option value="Green">Green</option>
+								  <option value="Blue">Blue</option>
+								  <option value="Yellow">Yellow</option>
+								  <option value="Magenta">Magenta</option>
+								  <option value="Cyan">Cyan</option>
+								  <option value="White">White</option>
+								  <option value="Black">Black</option>
+								  <option value="Grey">Grey</option>
+								</select><br>
+						 <label for="Brightness">Background Color</label>
+					</td>					
+      			</tr>
+
+      		</table>
+      <script>
+      
+		$(".changeColor").change(function(){
+        	var itemList = [];
+      		$(this).closest('tr').find('td').each(function(){
+      			itemList.push($(this).text());
+      		});
+      		var deviceName = itemList[0];	
+      		var color = lcdColor.value;	
+      		$.ajax({
+  				type: "GET",
+  				url: "http://localhost:8080/led/changeColor/" + deviceName + "/" + color,
+  				success: function(data){
+  					console.log(JSON.stringify(data));
+  				},
+  				error: function(data){
+  					console.log(JSON.stringify(data));
+  				}
+  			});      		
+      		
+		});
+		 //script to adjust brightness
+	       $(document).on('change', '.adjust', function() {
+	         var itemList = [];
+	         $(this).closest('tr').find('td').each(function(){
+	           itemList.push($(this).text());
+	         });
+	         var deviceName = itemList[0];
+	         var brightness = $(this).val();
+	         $.ajax({
+	         type: "GET",
+	         url: "http://localhost:8080/led/adjustBrightness/" + deviceName + "/" + brightness,
+	         success: function(data){
+	           console.log(JSON.stringify(data));
+	         },
+	         error: function(data){
+	           console.log(JSON.stringify(data));
+	         }
+	       });
+	   });
+	      //script to turn lcd on or off
+	       $(".toggle").click(function(){
+	         var itemList = [];
+	         $(this).closest('tr').find('td').each(function(){
+	           itemList.push($(this).text());
+	         });
+	         var deviceName = itemList[0];
+	         if($(this).prop("checked") == true){
+	           $.ajax({
+	             type: "GET",
+	             url: "http://localhost:8080/led/on/" + deviceName,
+	             success: function(data){
+	               console.log(JSON.stringify(data));
+	             },
+	             error: function(data){
+	               console.log(JSON.stringify(data));
+	             }
+	           });
+	         }
+	         else{
+	           $.ajax({
+	             type: "GET",
+	             url: "http://localhost:8080/led/off/" + deviceName,
+	             success: function(data){
+	               console.log(JSON.stringify(data));
+	             },
+	             error: function(data){
+	               console.log(JSON.stringify(data));
+	             }
+	           });
+	         }
+	       });
+	     //script to remove lcd from table
+	   $(".remove").click(function(){
+	       var itemList = [];
+	       /*
+	         Loop for the <tr> element through each <td>
+	         Device Name will be element one of the list
+	       */
+	       var row = $(this).closest('tr');
+	       $(this).closest('tr').find('td').each(function(){
+	         itemList.push($(this).text());
+	       });
+	       var deviceName = itemList[0];
+	       $.ajax({
+	             type : "DELETE",
+	             url : "http://localhost:8080/led/remove/" + deviceName,
+	             success : function(data) {
+	                console.log("Successfully deleted " + deviceName);
+	                row.remove();
+	             },
+	             async: false,
+	             error : function(data) {
+	               console.log("Failed to delete device " + deviceName);
+	             }
+	          });
+	     });
+  		 		
+      </script>  
+   </div>
+  </body>
+</html>

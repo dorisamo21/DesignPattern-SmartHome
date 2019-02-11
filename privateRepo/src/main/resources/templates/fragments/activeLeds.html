@@ -1,0 +1,155 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html>
+<head th:include="fragments/header.html :: header"></head>
+  <body>
+  <!-- Active Leds -->
+      <div th:fragment= "deviceList" id="devices">
+      		<center><h3>CURRENTLY ACTIVE LEDS</h3>
+      		<table class="table table-striped">
+      			<tr>
+      				<th>Device Name</th>
+      				<th>PortNumber</th>
+      				<th>Remove</th>
+      				<th>Off/On</th>
+      				<th>Brightness Slider</th>
+      				<th>Automate</th>
+      			</tr>
+   				<tr th:each="led : ${leds}">
+   				<script>
+   				function goTo(event){
+   					var element = event.target;
+   					console.log(element.innerHTML);
+   					var lcdName = element.innerHTML;
+   					window.location.href = `/lcd/view/${lcdName}/`;
+   				}
+   				</script>
+   					<input type="hidden" id="lcdName" th:value="${led.name}"/>
+   					<td th:text="${led.name}" class="led-name-onclick" onClick="goTo(event);"></td>
+   					<td th:text="${led.portNumber}"></td>
+   					<td><button type="button" class="remove">Remove</button></td>
+   					<td><label class="switch">
+						  <input type="checkbox" class="toggle">
+						  <span class="slider round"></span>
+						</label>
+					</td>
+					<td>
+						<input type="range" class="adjust" name="brightness"
+						         min="0" max="1023">
+						 <label for="Brightness">Brightness</label>
+					</td>
+					<td>
+						<button type="button" class="automate">Automate</button>
+					</td>
+      			</tr>
+      		</table></center>
+      <script>
+      //TODO - write script to blink leds
+       //script to adjust brightness
+        $(document).on('change', '.adjust', function() {
+        	var itemList = [];
+      		$(this).closest('tr').find('td').each(function(){
+      			itemList.push($(this).text());
+      		});
+      		var deviceName = itemList[0];
+      		var brightness = $(this).val();
+      		$.ajax({
+  				type: "GET",
+  				url: "http://localhost:8080/led/adjustBrightness/" + deviceName + "/" + brightness,
+  				success: function(data){
+  					console.log(JSON.stringify(data));
+  				},
+  				error: function(data){
+  					console.log(JSON.stringify(data));
+  				}
+  			});
+		});
+       //script to turn led on or off
+      	$(".toggle").click(function(){
+      		var itemList = [];
+      		$(this).closest('tr').find('td').each(function(){
+      			itemList.push($(this).text());
+      		});
+      		var deviceName = itemList[0];
+      		
+      		if($(this).prop("checked") == true){
+      			$.ajax({
+      				type: "GET",
+      				url: "http://localhost:8080/led/on/" + deviceName,
+      				success: function(data){
+      					console.log(JSON.stringify(data));
+      				},
+      				error: function(data){
+      					console.log(JSON.stringify(data));
+      				}
+      			});
+      		}	
+      		else{
+      			$.ajax({
+      				type: "GET",
+      				url: "http://localhost:8080/led/off/" + deviceName,
+      				success: function(data){
+      					console.log(JSON.stringify(data));
+      				},
+      				error: function(data){
+      					console.log(JSON.stringify(data));
+      				}
+      			});
+      		}
+      	});
+      	
+    	//script to remove led from table
+		$(".remove").click(function(){
+	  		var itemList = [];
+	  		/*
+	  			Loop for the <tr> element through each <td>
+	  			Device Name will be element one of the list
+	  		*/
+	  		var row = $(this).closest('tr');
+	  		$(this).closest('tr').find('td').each(function(){
+	  			itemList.push($(this).text());
+	  		});
+	  		var deviceName = itemList[0];
+	  		$.ajax({
+	            type : "DELETE",
+	            url : "http://localhost:8080/led/remove/" + deviceName,
+	            success : function(data) {
+	               console.log("Successfully deleted " + deviceName);
+	               row.remove();
+	            },
+	            async: false,
+	            error : function(data) {
+	          	  console.log("Failed to delete device " + deviceName);
+	            }
+	         });
+  		});
+    	
+		//script to activate automate mode
+		$(".automate").click(function(){
+	  		var itemList = [];
+	  		/*
+	  			Loop for the <tr> element through each <td>
+	  			Device Name will be element one of the list
+	  		*/
+	  		var row = $(this).closest('tr');
+	  		$(this).closest('tr').find('td').each(function(){
+	  			itemList.push($(this).text());
+	  		});
+	  		var deviceName = itemList[0];
+	  		//turn on the on button if not already active
+	  			
+	  		$.ajax({
+	            type : "GET",
+	            url : "http://localhost:8080/led/automate/" + deviceName,
+	            success : function(data) {
+	               console.log("Automate mode active for " + deviceName);
+	            },
+	            async: false,
+	            error : function(data) {
+	          	  console.log("Failed to activate automate mode for" + deviceName);
+	            }
+	         });
+  		});
+      </script>  
+   </div>
+  </body>
+</html>

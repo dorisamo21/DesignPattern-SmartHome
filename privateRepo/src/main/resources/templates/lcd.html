@@ -1,0 +1,215 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html>
+   <head th:include="fragments/header.html :: header"></head>
+   <body>
+	   <div id="frame"></div>
+      		
+      <div id="content">
+                              		
+      <div id="title">
+      SmrtHm <!-- title -->
+    
+                                                                              		
+      <ul>
+      <li><a href="/home">Home</a></li>
+      <li><a href="/led">Lights</a></li>
+      <li><a href="/fan">Fans</a></li>
+      <li><a class="current" href="/lcd">Lcds</a></li>
+	  </ul>
+	   </div>
+	  <div id="index">
+     <h4>LCD CREATION FORM</h4>
+ 
+	<!-- printMessage Input Form -->
+   <center><div id="writeLcdForm">
+     <form  method="post">
+       <div id="lcdScreenName"> Enter Message on LcdScreen </div>: 
+       <input type="text" size=30 id="printMessage" required="required" autocomplete="off"><br>
+       <input type="hidden" id="lcd_name" value="">
+       <input id="printSubmit" type="submit" value="Print Message"/>
+       
+      <!--  <input id="addNewLcd" type="submit" value="add new lcd" /> -->
+       
+     </form>
+     
+       <form>
+       	 <input type="text" size=30 id="weather" required="required" autocomplete="off" value = "Hartford"><br>
+       	 <input id="weatherSubmit" type="submit" value="Get Weather of City"/>
+       </form>
+	</div>	
+	<!-- printMessage Input Form Ends-->
+	<br><br>
+	<!-- makeLcd Input Form -->	
+      <div class = "form" id="makeLcd">
+      	<form  method="post">
+      		Lcd Name: <input type="text" id="lcdName" required="required" autocomplete="off"><br>
+      		<input id="lcdMake" type="submit" value="Create Lcd"/>
+      	</form>
+      	<select id="portNumber">
+		  <option>I2c-1</option>
+		  <option>I2c-2</option>
+		  <option>I2c-3</option>
+		</select>
+		<br>
+		
+		
+      </div></center>
+ 	<!-- makeLcd Input Form Ends-->	     
+ 	
+ 	
+      
+      <div class="messages">
+      	<h3>MESSAGES:</h3></div>
+      	<p><span id="message"></span></p>
+      </div>
+
+ 
+ 	<!-- Inject list of Devices here -->
+	<center><div th:include="fragments/activeLcds" id="lcdlist"></div></center>
+</div>
+	
+      <!-- Scripts should be placed at bottom of files...use jQuery to make Ajax calls to rest API -->
+ 	<script>
+ 		//used to update the table with fresh data 		
+	 	function updateTable(){
+	 		$.ajax({
+	            type : "GET",
+	            url : "http://localhost:8080/listOfLcds",
+	            success : function(data) {
+	               console.log("Successfully retrieved list of active devices");
+	               $("#lcdlist").replaceWith(data);
+	            },
+	            async: false,
+	            error : function(data) {
+	          	  console.log("Failed to retrieve list of active devices")
+	            }
+	         });
+	 	}
+	 	
+ 		
+	 	//script used to print weather data to lcd screen
+	 	$(document).ready(function() {
+			$("#weatherSubmit").click(function(event){
+				 event.preventDefault();
+				 console.log(document.getElementById("weather").value)
+				 $.ajax({
+			            type : "GET",
+			            url : "http://localhost:8080/led/getWeather/" + document.getElementById("lcdName").value + "/" + document.getElementById("weather").value,
+			            success : function(data) {
+			               console.log("Message sent");
+			               $("#message").text("Weather Data Retrieved");
+			            },
+			            error : function(data) {
+			          	  console.log("Failed to send message")
+			           	  $("#message").text("Failed to retrieve weather data");
+			            }
+			         });
+			}); 		
+	 	});
+	 	
+	 	/*
+	 		This script is called when user clicks Create Led button.  It takes the parameters
+	 		and sends request back to out REST api.  After that it updates the table with our
+	 		current lists of active lcds
+	 	*/
+         $(document).ready(function() {
+            $("#lcdMake").click(function(event) {
+              event.preventDefault();
+               var lcdRequest = {
+                  name : document.getElementById("lcdName").value,
+                  portNumber : $("#portNumber option:selected").text()
+               };
+               
+               
+               var requestJSON = JSON.stringify(lcdRequest);
+               
+               $.ajax({
+                  type : "POST",
+                  url : "http://localhost:8080/led/makeLcd",
+                  headers : {
+                     "Content-Type" : "application/json"
+                  },
+                  dataType: "json",
+                  data : requestJSON,
+                  success : function(data) {
+               	  console.log(data);
+            		//if name exists or port in use
+            	  if(data.status == 304 || data.status == 200){
+            		  $("#message").text(data.message);
+            	  }
+            		if(data.status == 202){
+            			  $("#message").text(data.errorMessage);
+            		}
+            	  else{
+	               	  if(data.message.substring(0,7) === "Created") {           		
+	               			$('#writeLcdForm').show();
+	           	    		$('#lcdInfo').show();
+							//$('#makeLcd').hide();
+	               			$('#lcd_title').html('Lcd Print Message');
+	               		}
+	               		var lcd_name = $('#lcd_name');
+	               		lcd_name.val(lcdRequest.name);
+	               		$("#message").text(data.message);
+	                  }            		  
+            	  },
+                  async: false,
+                  error : function(data) {
+               		$('#writeLcdForm').hide();
+               		$('#lcdInfo').hide();
+					$('#makeLcd').show();
+               		$('#lcd_title').html('Lcd Creation Form');
+                  }
+               });
+               updateTable();
+            });
+         });
+ 
+ 		  $(document).ready(function(){
+ 		  	$('#addNewLcd').click(function(event){
+					$('#makeLcd').toggle();
+ 		  	});
+ 		  });
+ 
+          $(document).ready(function() {
+            $("#printSubmit").click(function(event) {
+              event.preventDefault();
+               var lcdRequest = {
+                  name : document.getElementById("lcd_name").value,
+                  message : document.getElementById("printMessage").value,
+                  color : ""
+               };
+               
+               var requestJSON = JSON.stringify(lcdRequest);
+               
+               $.ajax({
+                  type : "POST",
+                  url : "http://localhost:8080/led/printMessage",
+                  headers : {
+                     "Content-Type" : "application/json"
+                  },
+                  dataType: "json",
+                  data : requestJSON,
+                  success : function(data) {
+               	  console.log(data);
+               	  if(data.status == 404){
+               		  console.log(data.message);
+               		  $("#message").text("No lcds cannot print message!");
+               	  }
+               	  else{
+	                  $("#message").text("Message Printed");
+               	  }
+                  },
+                  async: false,
+                  error : function(data) {
+                	  $("#message").text(data.message);
+                  }
+               });
+            });
+          });
+                   
+	 	//reload the table upon refresh or redirection
+	 	$(document).ready(function(){
+	 		updateTable();
+	 	});
+      </script>
+</body>

@@ -1,0 +1,85 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html>
+
+<!--
+authors: Kim Niehaus, Adrian Ward-Manthey, Ga Young Lee
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      Frame:
+      unsplash.com/@fancycrave  edited by Kim
+
+      Tabbed Content:
+      codepen.io/cssjockey/pen/jGzuK
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-->
+
+	<head th:include="fragments/header.html :: header"></head>
+	<header>
+		<body>
+		
+		<div id="frame"></div>
+		
+		<div id="content">
+		
+		<div id="title">
+		SmrtHm <!-- title -->
+		</div>
+		
+		<ul class="tabs">
+		<li class="tab-link current" data-tab="tab-1">Home</li>
+		<li class="tab-link" data-tab="tab-2">Lights</li>
+		<li class="tab-link" data-tab="tab-3">Fan</li>
+		<li class="tab-link" data-tab="tab-4">Lcd</li>
+		</ul>
+		
+		<div id="tab-1" class="tab-content current">
+		<!-- start of index -->
+		Make device section Here
+		
+		<hr> <!-- divider -->
+		
+		Devices in use section here
+		</div>
+		<!-- end of index-->
+		
+		
+		<div id="tab-2" class="tab-content">
+		<div th:include="/led.html"></div>
+		
+		<!-- End of LED Section -->
+		
+		<div id="tab-3" class="tab-content">
+		<div th:include="/fan.html"></div>
+		
+		
+		<!-- End Fan Section -->
+		
+		
+		<div id="tab-4" class="tab-content">
+		<div th:include="/lcd.html"></div>
+		
+		</div>
+		<!-- End LCD Section -->
+		
+		</div>
+		
+		
+		<script>
+		$(document).ready(function(){
+		    	
+       	$('ul.tabs li').click(function(){
+           		var tab_id = $(this).attr('data-tab');
+
+                   		$('ul.tabs li').removeClass('current');
+                           		$('.tab-content').removeClass('current');
+
+                                   		$(this).addClass('current');
+                                           		$("#"+tab_id).addClass('current');
+                                                   	})
+
+                                                       })
+		</script>
+		
+		</body>
+	</header>
+</html>

@@ -1,0 +1,244 @@
+body {
+    font: 20px Open Sans;
+    color: #888;
+    background: #f9f9f9;
+}
+
+
+
+table {
+    border-collapse: collapse;
+    width: 50%;
+}
+
+th, td {
+    text-align: left;
+    padding: 8px;
+}
+
+tr:nth-child(even){background-color: #f2f2f2}
+
+th {
+    background-color: #529249;
+    color: white;
+}
+
+#frame {
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    position: fixed;
+    width: 700px;
+    height: 780px;
+    z-index: -1;
+    background-image: url(http://i68.tinypic.com/2afc4ly.jpg);
+    background-color: #000;
+    background-size: cover;
+    background-position: center;
+    -webkit-clip-path: polygon(0% 0%, 0% 100%, 6% 100%, 6% 6%, 94% 6%, 94% 94%, 6% 94%, 6% 100%, 100% 100%, 100% 0%);
+    clip-path: polygon(0% 0%, 0% 100%, 6% 100%, 6% 6%, 94% 6%, 94% 94%, 6% 94%, 6% 100%, 100% 100%, 100% 0%);
+}
+
+#content {
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    position: absolute;
+    width: 675px;
+    height: 710px;
+}
+
+#title {
+    font: 800 18px Montserrat;
+    text-transform: uppercase;
+    letter-spacing: 5px;
+    text-align: center;
+    margin-top: 50px;
+    margin-left:4%;
+    color: #333;
+    width: 620px;
+
+}
+
+
+ul {
+    list-style: none;
+    width: 100%;
+    background-color: #f9f9f9;
+}
+li {display: inline-block;
+    padding-left: 30px;
+    padding-right: 30px;
+}
+li a {
+    font-size: 16px;
+    text-align: center;
+    color: #aaa;
+    letter-spacing: 1px;
+    border-bottom: 3px solid #f9f9f9;
+    -webkit-transition: all 0.2s ease;
+    transition: all 0.2s ease;
+}
+
+li a:hover {
+    color: #07c355;
+}
+
+.active {
+    font-weight: 800;
+    text-shadow: 0 0;
+    color: #07c355;
+    border-bottom: 3px solid #07c355;
+}
+
+.tab-content {
+    display: none;
+    padding: 15px;
+    width: 410px;
+    height: 360px;
+    top: 30%;
+    left: 0;
+    right: 0;
+    margin: auto;
+    overflow-y: auto;
+    overflow-x: hidden;
+    position: absolute;
+    z-index: 1;
+}
+
+.tab-content.current {
+    display: inherit;
+}
+
+#index {
+    text-align: justify;
+    margin-top: 10px;
+    margin-left: 10%;
+}
+
+
+hr {
+    margin: 15px 0;
+    border-color: #ddd;
+}
+
+::-webkit-scrollbar {
+    width: 3px;
+    background: #f9f9f9;
+}
+
+::-webkit-scrollbar-thumb:vertical {
+    background: #333;
+}
+
+::selection {
+    background: #07c355;
+    color: #fff;
+}
+
+::-moz-selection {
+    background: #07c355;
+    color: #fff;
+}
+
+p::selection {
+    background: #07c355;
+    color: #fff;
+}
+
+p::-moz-selection {
+    background: #07c355;
+    color: #fff;
+}
+
+/*
+	NOTE: I copied this from https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_switch
+*/
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #2196F3;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+/*navigation menu styling*/
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #333;
+}
+
+li {
+    float: left;
+}
+
+li a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+/* Change the link color to #111 (black) on hover */
+li a:hover {
+    background-color: #111;
+}

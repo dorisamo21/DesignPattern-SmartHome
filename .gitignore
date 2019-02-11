@@ -1,0 +1,16 @@
+#Misc
+.metadata/
+
+.recommenders/
+
+#Eclipse Files
+*.project
+.eclipse/
+.settings
+.classpath
+.factorypath
+.bin/
+
+#Compiled class file
+*.class
+/bin/

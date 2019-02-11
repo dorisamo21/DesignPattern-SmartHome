@@ -1,0 +1,179 @@
+
+:root {
+
+    /*=== change style options here: ===*/
+
+    /* global */
+    --body-font-color: #888;
+    --body-font-size: 10px;
+    --body-link-font-color: #000;
+    --body-link-font-hover-color: #07c355;
+    --body-background-color: #f9f9f9;
+
+    /* content */
+    --frame-image: url(http://i68.tinypic.com/2afc4ly.jpg);
+    --frame-color: #000; /* for fallback */
+    --title-font-color: #333;
+    --navigation-font-color: #aaa;
+    --current-tab-navigation-color: #07c355;
+    --bottom-link-font-color: #fff;
+    --border-color: #ddd;
+
+    /* miscellaneous */
+    --scrollbar-color: #333;
+    --selection-color: #07c355;
+}
+
+body {
+    font: var(--body-font-size)/calc(1.5em + (var(--body-font-size) / 2)) Open Sans;
+    color: var(--body-font-color);
+    background: var(--body-background-color);
+}
+
+a {
+    color: var(--body-link-font-color);
+}
+
+a:hover {
+    color: var(--body-link-font-hover-color);
+}
+
+#frame {
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    position: fixed;
+    width: 500px;
+    height: 580px;
+    z-index: -1;
+    background-image: var(--frame-image);
+    background-color: var(--frame-color);
+    background-size: cover;
+    background-position: center;
+    -webkit-clip-path: polygon(0% 0%, 0% 100%, 6% 100%, 6% 6%, 94% 6%, 94% 94%, 6% 94%, 6% 100%, 100% 100%, 100% 0%);
+    clip-path: polygon(0% 0%, 0% 100%, 6% 100%, 6% 6%, 94% 6%, 94% 94%, 6% 94%, 6% 100%, 100% 100%, 100% 0%);
+}
+
+#content {
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    position: absolute;
+    width: 484px;
+    height: 510px;
+}
+
+#title {
+    font: 800 18px Montserrat;
+    text-transform: uppercase;
+    letter-spacing: 5px;
+    text-align: center;
+    margin-top: 30px;
+    color: var(--title-font-color);
+
+}
+
+ul.tabs {
+    left: 0;
+    right: 0;
+    padding: 0;
+    margin: 10px auto 0;
+    position: relative;
+    list-style: none;
+    text-align: center;
+}
+
+ul.tabs li {
+    padding: 0 5px;
+    margin: 0 4px;
+    display: inline-block;
+    cursor: pointer;
+    font-size: 9px;
+    color: var(--navigation-font-color);
+    letter-spacing: 1px;
+    border-bottom: 3px solid var(--body-background-color);
+    -webkit-transition: all 0.2s ease;
+    transition: all 0.2s ease;
+}
+
+ul.tabs li:hover {
+    color: var(--current-tab-navigation-color);
+}
+
+ul.tabs li.current {
+    font-weight: 800;
+    text-shadow: 0 0;
+    color: var(--current-tab-navigation-color);
+    border-bottom: 3px solid var(--current-tab-navigation-color);
+}
+
+.tab-content {
+    display: none;
+    padding: 15px;
+    width: 410px;
+    height: 360px;
+    top: 100px;
+    left: 0;
+    right: 0;
+    margin: auto;
+    overflow-y: auto;
+    overflow-x: hidden;
+    position: absolute;
+    z-index: 1;
+}
+
+.tab-content.current {
+    display: inherit;
+}
+
+#index {
+    text-align: center;
+    margin-top: 125px;
+}
+
+#tab-2 {
+    text-align: justify;
+}
+
+.column {
+    width: 50%;
+    float: left;
+}
+
+hr {
+    margin: 15px 0;
+    border-color: var(--border-color);
+}
+
+::-webkit-scrollbar {
+    width: 3px;
+    background: var(--body-background-color);
+}
+
+::-webkit-scrollbar-thumb:vertical {
+    background: var(--scrollbar-color);
+}
+
+::selection {
+    background: var(--selection-color);
+    color: #fff;
+}
+
+::-moz-selection {
+    background: var(--selection-color);
+    color: #fff;
+}
+
+p::selection {
+    background: var(--selection-color);
+    color: #fff;
+}
+
+p::-moz-selection {
+    background: var(--selection-color);
+    color: #fff;
+}

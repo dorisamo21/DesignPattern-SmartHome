@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<!--
+authors: Kim Niehaus, Adrian Ward-Manthey, Ga Young Lee
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      Frame:
+      unsplash.com/@fancycrave  edited by Kim
+
+      Tabbed Content:
+      codepen.io/cssjockey/pen/jGzuK
+
+      Macy:
+      github.com/bigbitecreative/macy.js
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-->
+
+<title>SmrtHm</title>
+<link rel="stylesheet" type="text/css" href="mystyle.css">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="https://fonts.googleapis.com/css?family=Montserrat:800|Open+Sans:400,400i,700,700i,800" rel="stylesheet">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+
+</head>
+<body>
+
+<div id="frame"></div>
+
+<div id="content">
+
+<div id="title">
+SmrtHm <!-- title -->
+</div>
+
+<ul class="tabs">
+<li class="tab-link current" data-tab="tab-1">Home</li>
+<li class="tab-link" data-tab="tab-2">Lights</li>
+<li class="tab-link" data-tab="tab-3">Fan</li>
+<li class="tab-link" data-tab="tab-4">LCD</li>
+</ul>
+
+<div id="tab-1" class="tab-content current">
+<div id="index">
+
+<!-- start of index -->
+Make device section Here
+
+<hr> <!-- divider -->
+
+Devices in use section here
+
+
+<!-- end of index-->
+
+</div>
+</div>
+
+<div id="tab-2" class="tab-content">
+
+<!-- Start of LED Section -->
+
+<div id="index">
+
+LED Selection check boxes here
+
+<hr> <!-- divider -->
+<div class="column">
+
+On button here
+
+</div>
+<div class="column">
+
+Off button here
+
+</div>
+
+<hr> <!-- divider -->
+
+Brightness Slider here
+
+
+
+</div>
+<!-- End of LED Section -->
+</div>
+
+<div id="tab-3" class="tab-content">
+<div id="index">
+<!-- Fan Section Here -->
+
+  <div class="column">
+
+  On button here
+
+  </div>
+  <div class="column">
+
+  Off button here
+
+  </div>
+
+  <hr> <!-- divider -->
+
+Speed Slider here
+
+
+</div>
+<!-- End Fan Section -->
+</div>
+
+<div id="tab-4" class="tab-content">
+  <div id="index">
+  <!-- LCD Section Here -->
+
+    <div class="column">
+
+    Input Message Field Here
+
+    </div>
+    <div class="column">
+
+    Color drop down here
+
+    </div>
+
+
+
+  Submit Message button here<br><p>
+  Clear Message button here
+
+
+  </div>
+<!-- End LCD Section -->
+</div>
+
+<script src="macy.js"></script>
+<script>
+$(document).ready(function(){
+    $('ul.tabs li').click(function(){
+        var tab_id = $(this).attr('data-tab');
+
+        $('ul.tabs li').removeClass('current');
+        $('.tab-content').removeClass('current');
+
+        $(this).addClass('current');
+        $("#"+tab_id).addClass('current');
+    });
+
+    $('ul.tabs li').click(function(){
+        var masonry = new Macy({
+        container: '#tags',
+        debug: true,
+        columns: 2,
+        margin: {
+            x: 10,
+            y: 25
+        }
+    });
+    });
+});
+</script>
+
+</body>
+</html>

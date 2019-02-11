@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+
+<!--
+authors: Kim Niehaus, Adrian Ward-Manthey, Ga Young Lee
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      Frame:
+      unsplash.com/@fancycrave  edited by Kim
+
+      Tabbed Content:
+      codepen.io/cssjockey/pen/jGzuK
+
+      Macy:
+      github.com/bigbitecreative/macy.js
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-->
+
+<head th:include="fragments/header.html :: header"></head>
+<header th:include="fragments/navigationBar.html :: navigation"></header>
+<body>
+
+<div id="frame"></div>
+
+<div id="content">
+
+<div id="title">
+SmrtHm <!-- title -->
+</div>
+
+<ul class="tabs">
+<li class="tab-link current" data-tab="tab-1">Home</li>
+<li class="tab-link" data-tab="tab-2">Lights</li>
+<li class="tab-link" data-tab="tab-3">Fan</li>
+<li class="tab-link" data-tab="tab-4">LCD</li>
+</ul>
+
+<div id="tab-1" class="tab-content current">
+
+
+<!-- start of index -->
+Make device section Here
+
+<hr> <!-- divider -->
+
+Devices in use section here
+
+
+<!-- end of index-->
+
+
+</div>
+
+<div id="tab-2" class="tab-content">
+<div th:include="templates/led" id="devices"></div>
+
+
+
+<!-- End of LED Section -->
+</div>
+
+<div id="tab-3" class="tab-content">
+
+<!-- Fan Section Here -->
+
+  <div class="column">
+
+  On button here
+
+  </div>
+  <div class="column">
+
+  Off button here
+
+  </div>
+
+  <hr> <!-- divider -->
+
+Speed Slider here
+
+
+
+<!-- End Fan Section -->
+</div>
+
+<div id="tab-4" class="tab-content">
+  
+  <!-- LCD Section Here -->
+
+    <div class="column">
+
+    Input Message Field Here
+
+    </div>
+    <div class="column">
+
+    Color drop down here
+
+    </div>
+
+
+
+  Submit Message button here<br><p>
+  Clear Message button here
+
+
+ 
+<!-- End LCD Section -->
+</div>
+
+<script src="macy.js"></script>
+<script>
+$(document).ready(function(){
+    $('ul.tabs li').click(function(){
+        var tab_id = $(this).attr('data-tab');
+
+        $('ul.tabs li').removeClass('current');
+        $('.tab-content').removeClass('current');
+
+        $(this).addClass('current');
+        $("#"+tab_id).addClass('current');
+    });
+
+    $('ul.tabs li').click(function(){
+        var masonry = new Macy({
+        container: '#tags',
+        debug: true,
+        columns: 2,
+        margin: {
+            x: 10,
+            y: 25
+        }
+    });
+    });
+});
+</script>
+
+</body>
+</html>

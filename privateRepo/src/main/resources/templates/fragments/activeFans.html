@@ -1,0 +1,115 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html>
+  <body>
+  <!-- Active Leds -->
+      <div th:fragment= "deviceList" id="devices">
+      		<h3>CURRENTLY ACTIVE FANS</h3>
+      		<table class="table table-striped">
+      			<tr>
+      				<th>Fan Name</th>
+      				<th>PortNumber</th>
+      				<th>Remove</th>
+      				<th>Off/On</th>
+      				<th>Adjust Speed</th>
+      			</tr>
+   				<tr th:each="fan : ${fans}">
+   					<td th:text="${fan.name}"></td>
+   					<td th:text="${fan.portNumber}"></td>
+   					<td><button type="button" class="remove">Remove</button></td>
+   					<td><label class="switch">
+						  <input type="checkbox" class="toggle">
+						  <span class="slider round"></span>
+						</label>
+					</td>
+					<td>
+						<input type="range" class="adjust" name="speed"
+						         min="0" max="255">
+						 <label for="Speed">Speed</label>
+					</td>
+      			</tr>
+      		</table>
+      <script>
+      //TODO - write script to blink leds
+       //script to adjust brightness
+       
+        $(document).on('change', '.adjust', function() {
+        	var itemList = [];
+      		$(this).closest('tr').find('td').each(function(){
+      			itemList.push($(this).text());
+      		});
+      		var deviceName = itemList[0];
+      		var brightness = $(this).val();
+      		$.ajax({
+  				type: "GET",
+  				url: "http://localhost:8080/fan/adjustBrightness/" + deviceName + "/" + brightness,
+  				success: function(data){
+  					console.log(JSON.stringify(data));
+  				},
+  				error: function(data){
+  					console.log(JSON.stringify(data));
+  				}
+  			});
+		});
+       //script to turn led on or off
+      	$(".toggle").click(function(){
+      		var itemList = [];
+      		$(this).closest('tr').find('td').each(function(){
+      			itemList.push($(this).text());
+      		});
+      		var deviceName = itemList[0];
+      		
+      		if($(this).prop("checked") == true){
+      			$.ajax({
+      				type: "GET",
+      				url: "http://localhost:8080/fan/on/" + deviceName,
+      				success: function(data){
+      					console.log(JSON.stringify(data));
+      				},
+      				error: function(data){
+      					console.log(JSON.stringify(data));
+      				}
+      			});
+      		}	
+      		else{
+      			$.ajax({
+      				type: "GET",
+      				url: "http://localhost:8080/fan/off/" + deviceName,
+      				success: function(data){
+      					console.log(JSON.stringify(data));
+      				},
+      				error: function(data){
+      					console.log(JSON.stringify(data));
+      				}
+      			});
+      		}
+      	});
+      	
+    	//script to remove fan from table
+		$(".remove").click(function(){
+	  		var itemList = [];
+	  		/*
+	  			Loop for the <tr> element through each <td>
+	  			Device Name will be element one of the list
+	  		*/
+	  		var row = $(this).closest('tr');
+	  		$(this).closest('tr').find('td').each(function(){
+	  			itemList.push($(this).text());
+	  		});
+	  		var deviceName = itemList[0];
+	  		$.ajax({
+	            type : "DELETE",
+	            url : "http://localhost:8080/fan/remove/" + deviceName,
+	            success : function(data) {
+	               console.log("Successfully deleted " + deviceName);
+	               row.remove();
+	            },
+	            async: false,
+	            error : function(data) {
+	          	  console.log("Failed to delete device " + deviceName);
+	            }
+	         });
+  		});
+      </script>  
+   </div>
+  </body>
+</html>

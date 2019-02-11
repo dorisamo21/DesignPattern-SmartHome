@@ -1,0 +1,111 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html>
+ <head th:include="fragments/header.html :: header"></head>
+ 
+   <body>
+	<div id="frame"></div>
+      		
+      <div id="content">
+                              		
+      <div id="title">
+      SmrtHm <!-- title -->
+                                                                           		
+      <ul>
+      <li><a href="/home">Home</a></li>
+      <li><a class="current" href="/led">Lights</a></li>
+      <li><a href="/fan">Fans</a></li>
+      <li><a href="/lcd">Lcds</a></li>
+	  </ul>
+	  </div>  
+	  <div id="index">
+      <h4>LED CREATION FORM</h4>
+      <div class = "form">
+      	<center><form  method="post">
+      		Led Name: <input type="text" id="ledName" required="required" autocomplete="off"><br>
+      		<input id="ledMake" type="submit" value="Create Led"/>
+      	</form>
+      	<select id="portNumber">
+		  <option>D2</option>
+		  <option>D3</option>
+		  <option>D4</option>
+		  <option>D5</option>
+		  <option>D6</option>
+		  <option>D7</option>
+		</select>
+      </div>
+      
+      <div class="messages">
+      	<h3>MESSAGES:</h3>
+      	<p><span id="message"></span></p></div><center>
+      </div>
+
+	<!-- Inject list of Devices here -->
+	
+	<div th:include="fragments/activeLeds" id="devices"></div>
+	</div>
+      <!-- Scripts should be placed at bottom of files...use jQuery to make Ajax calls to rest API -->
+ 	<script>
+ 		//used to update the table with fresh data
+	 	function updateTable(){
+	 		$.ajax({
+	            type : "GET",
+	            url : "http://localhost:8080/listOfLeds",
+	            success : function(data) {
+	               console.log("Successfully retrieved list of active leds");
+	               $("#devices").replaceWith(data);
+	            },
+	            async: false,
+	            error : function(data) {
+	          	  console.log("Failed to retrieve list of active leds")
+	            }
+	         });
+	 	}
+ 		
+	 	/*
+	 		This script is called when user clicks Create Led button.  It takes the parameters
+	 		and sends request back to out REST api.  After that it updates the table with our
+	 		current lists of active leds
+	 	*/
+         $(document).ready(function() {
+            $("#ledMake").click(function(event) {
+              event.preventDefault();
+               var ledRequest = {
+                  name : document.getElementById("ledName").value,
+                  portNumber : $("#portNumber option:selected").text()
+               };
+               var requestJSON = JSON.stringify(ledRequest);
+               
+               $.ajax({
+                  type : "POST",
+                  url : "http://localhost:8080/led/makeLed",
+                  headers : {
+                     "Content-Type" : "application/json"
+                  },
+                  dataType: "json",
+                  data : requestJSON,
+                  success : function(data) {
+                	  if(data.status == 200 || data.status == 304){
+	                	  console.log(data);
+	                	  $("#message").text(data.message);
+                	  }
+                	  else{
+                		  console.log(data);
+                		  $("#message").text(data.errorMessage);
+                	  }
+                  },
+                  async: false,
+                  error : function(data) {
+                	  $("#message").text(data.errorMessage);
+                  }
+               });
+               updateTable();
+            });
+         });
+	 	
+	 	//reload the table upon refresh or redirection
+	 	$(document).ready(function(){
+	 		updateTable();
+	 	});
+      </script>
+   </body>
+</html>
